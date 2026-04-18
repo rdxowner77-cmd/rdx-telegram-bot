@@ -408,9 +408,13 @@ async def callback_handler(client, callback_query: CallbackQuery):
         await start(client, callback_query.message)
         return
 
-# Handle custom credits input
-@app.on_message(filters.text & ~filters.command)
+# ==================== FIXED: HANDLE CREDITS INPUT ====================
+@app.on_message(filters.text)
 async def handle_credits(client, message):
+    # Ignore commands
+    if message.text.startswith('/'):
+        return
+    
     uid = message.from_user.id
     if user_data.get(uid, {}).get("awaiting_credits"):
         text = message.text.strip()
